@@ -2,23 +2,49 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow</title>
+  <meta charset="UTF-8" />
+  <title>FocusFlow</title>
+  <!-- <style src="src/css/popup.css"></style> -->
+  <link rel="stylesheet" href="src/css/popup.css">
 </head>
 
 <body>
-    <span>Websocket status: <span id="status"></span></span>
-    <span id="focus"></span>
-    <!-- <input type="text" id="inputField" placeholder="Type something..."> -->
-    <select id="corner-select">
-        <option value="top-left">Top Left</option>
-        <option value="top-right">Top Right</option>
-        <option value="bottom-left">Bottom Left</option>
-        <option value="bottom-right">Bottom Right</option>
-    </select>
-    <button id="submitButton">Submit</button>
-    <script src="popup.js"></script>
+  <!-- Welcome Screen -->
+  <div class="screen1 welcome-screen1" id="welcome">
+    <div>
+      <h1>FocusFlow</h1>
+      <p>Welcome to FocusFlow!<br>
+        We'll guide you through four focus steps.<br>
+        Please stare at the indicated screen corners.</p>
+      <button class="start-button" id="start">Start!</button>
+    </div>
+  </div>
+
+  <!-- Focus Sequence Screen -->
+  <div class="screen1 black-screen1" id="sequence">
+    <img id="focus-img" class="focus-image" src="" />
+    <div class="focus-text" id="focus-text">Focusing...</div>
+  </div>
+
+  <!-- Main Screen -->
+  <div class="main-screen" id="main-screen">
+    <div class="focus-state">Focus State: Active</div>
+    <div class="chat-history" id="chat-history">
+      <!-- Chat log here -->
+    </div>
+    <div class="input-section">
+      <input type="text" class="input-box" id="user-input" placeholder="Type something...">
+      <button class="send-btn" id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <!-- Notification Area -->
+  <div id="notification-screen">
+    FocusFlow: I'm here to help you stay focused!
+  </div>
+
+  <!-- 脚本引用：确保 script.js 文件和 HTML 在同一目录 -->
+  <script src="src/js/script.js"></script>
 </body>
 
 </html>

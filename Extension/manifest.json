@@ -4,7 +4,7 @@
     "version": "1.0",
     "manifest_version": 3,
     "permissions": [
-        "nativeMessaging"
+        "storage"
     ],
     "content_scripts": [
         {
@@ -12,16 +12,16 @@
                 "<all_urls>"
             ],
             "js": [
-                "content.js"
+                "src/js/content.js"
             ]
         }
     ],
     "background": {
-        "service_worker": "background.js",
+        "service_worker": "src/js/background.js",
         "type": "module"
     },
     "action": {
         "default_popup": "index.html",
-        "default_icon": "FocusFlow.png"
+        "default_icon": "static/images/icon.png"
     }
 }

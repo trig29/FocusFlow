@@ -1,0 +1,121 @@
+* {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    min-width: 400px;
+    overflow: hidden;
+}
+
+.screen1 {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.welcome-screen1 {
+    display: flex;
+    border: 4px solid black;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+}
+
+.welcome-screen1 h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.start-button {
+    padding: 10px 30px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.focus-image {
+    max-width: 90vw;
+    max-height: 80vh;
+}
+
+.focus-text {
+    margin-top: 20px;
+    color: white;
+    font-size: 1.5em;
+}
+
+.black-screen1 {
+    background: black;
+    color: white;
+    flex-direction: column;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-screen {
+    display: none;
+    padding: 20px;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 300px;
+}
+
+.focus-state {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.chat-history {
+    height: 200px;
+    background-color: #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+.input-section {
+    display: flex;
+}
+
+.input-box {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
+.send-btn {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0b01c6;
+    color: white;
+    cursor: pointer;
+}
+
+#notification-screen {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
