@@ -45,7 +45,7 @@ function showFocusStep(index) {
       focusText.textContent = `Prepare to stare at the ${step.corner} on your screen (${timeLeft}s)`;
     },
     () => {
-      chrome.runtime.sendMessage({ action: 'ws_send', value: (new Message("corner", index)).encode() })
+      chrome.runtime.sendMessage({ action: 'ws_send', value: (new Message("corner", index + 1)).encode() })
       runCountdown(
         3,
         (timeLeft) => {
