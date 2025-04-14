@@ -8,7 +8,7 @@ from collections import deque
 import gaze_tracking as gt
 
 scroll_data = deque(maxlen=500)
-is_focus = None
+is_focus = True
 sum = 0
 
 
@@ -35,6 +35,15 @@ async def handler(websocket):
                 print(f"Received scroll: {value}")
                 scroll_data.append(value)
             case "focus":
+                if not (is_focus and gt.Focus):
+                    await websocket.send(
+                        json.dumps(
+                            {
+                                "type": "show_notification",
+                                "value": None,
+                            }
+                        )
+                    )
                 await websocket.send(
                     json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
                 )
@@ -50,18 +59,18 @@ async def data_analysis():
 def analyze_mouse(data: deque):
     maximum_idle_minutes = 0
     maximum_move_counts = 1
-    while (
-        len(data) > 0
-        and int(time.time() * 1000) - data[0]["time"] > maximum_idle_minutes * 60 * 1000
-    ):
-        global is_focus
-        is_focus = True
+    global is_focus
+    if len(data) == 0:
+        is_focus = False
+        return
+    while int(time.time() * 1000) - data[0]["time"] > maximum_idle_minutes * 60 * 1000:
         print(f"Data: {data[0]}")
         data.popleft()
         if len(data) == maximum_move_counts:
             is_focus = False
-        elif len(data) == 0:
-            is_focus = False
+
+        else:
+            is_focus = True
     print(is_focus)
 
 

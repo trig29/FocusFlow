@@ -1,16 +1,29 @@
 let webSocket = null;
 
+class Message {
+    constructor(type, value) {
+        this.type = type
+        this.value = value
+    }
+
+    encode() {
+        let msg = JSON.stringify(this)
+        return msg
+    }
+}
+
 function keepAlive() {
     const keepAliveIntervalId = setInterval(
         () => {
             if (webSocket) {
-                webSocket.send('keepalive');
+                // webSocket.send('keepalive');
+                webSocket.send((new Message("focus", {})).encode())
             } else {
                 clearInterval(keepAliveIntervalId);
             }
         },
         // Set the interval to 20 seconds to prevent the service worker from becoming inactive.
-        20 * 1000
+        1000
     );
 }
 
