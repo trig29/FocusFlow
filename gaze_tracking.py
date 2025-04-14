@@ -5,10 +5,14 @@ import time
 import numpy as np
 import data_processing as dp
 from collections import deque
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+import os
 
-#Concentrated or Not Bool Value:
 Focus = True
-
+Focus_flow = []
+Initialized_direaction = [None, None, None, None, None]
 
 class SlidingWindow:
     def __init__(self, maxlen=10):
@@ -40,7 +44,74 @@ def webcam_checker():
         #TODO
         #前端输出：“请打开摄像头字样”
 
-Initialized_direaction = [None, None, None, None, None]
+def graph_generate():
+    y = np.array([1 if val else -1 for val in Focus_flow])
+    x_raw = np.linspace(0, 100, len(y))
+    percent_ticks = [0, 25, 50, 75, 100]
+
+    fig = plt.figure(figsize=(12, 5))
+
+    plt.subplot(1, 2, 1)
+    focused_count = np.sum(y == 1)
+    distracted_count = np.sum(y == -1)
+
+    plt.pie(
+        [focused_count, distracted_count],
+        labels=['Focused', 'Distracted'],
+        colors=['green', 'red'],
+        autopct='%1.1f%%',
+        startangle=90,
+        counterclock=False
+    )
+    plt.title("Focus Distribution")
+
+    plt.subplot(1, 2, 2)
+
+    for i in range(len(x_raw) - 1):
+        x_fill = [x_raw[i], x_raw[i + 1]]
+        y_fill = [y[i], y[i + 1]]
+        if y[i] >= 0 and y[i + 1] >= 0:
+            plt.fill_between(x_fill, y_fill, 0, color='lightgreen')
+        elif y[i] <= 0 and y[i + 1] <= 0:
+            plt.fill_between(x_fill, y_fill, 0, color='lightcoral')
+        else:
+            x0, x1 = x_fill
+            y0, y1 = y_fill
+            x_cross = x0 + (0 - y0) * (x1 - x0) / (y1 - y0)
+            plt.fill_between([x0, x_cross], [y0, 0], 0,
+                            color='lightgreen' if y0 > 0 else 'lightcoral')
+            plt.fill_between([x_cross, x1], [0, y1], 0,
+                            color='lightgreen' if y1 > 0 else 'lightcoral')
+
+    for i in range(1, len(x_raw)):
+        x_pair = [x_raw[i - 1], x_raw[i]]
+        y_pair = [y[i - 1], y[i]]
+        if y[i - 1] >= 0 and y[i] >= 0:
+            color = 'green'
+        elif y[i - 1] <= 0 and y[i] <= 0:
+            color = 'red'
+        else:
+            x0, x1 = x_pair
+            y0, y1 = y_pair
+            x_cross = x0 + (0 - y0) * (x1 - x0) / (y1 - y0)
+            plt.plot([x0, x_cross], [y0, 0], color='green' if y0 > 0 else 'red', linewidth=2)
+            plt.plot([x_cross, x1], [0, y1], color='green' if y1 > 0 else 'red', linewidth=2)
+            continue
+        plt.plot(x_pair, y_pair, color=color, linewidth=2)
+
+    plt.axhline(0, color='black', linewidth=0.5, linestyle='--')
+    plt.xticks(percent_ticks, [f"{p}%" for p in percent_ticks])
+    plt.yticks([-1, 1], ["Distracted", "Focused"])
+    plt.xlabel("Progress")
+    plt.title("Focus Over Time (Line Chart)")
+    plt.grid(True, axis='y', linestyle='--', alpha=0.3)
+    plt.tight_layout()
+
+    buffer = BytesIO()
+    fig.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    return image_base64
 
 def gaze_tracking_initialization(direaction):
 
@@ -49,7 +120,6 @@ def gaze_tracking_initialization(direaction):
     #目前想法是先倒计时3秒（倒计时F），结束后调用该函数，开始盯着角落五秒（倒计时S），
     # 结束后函数将初始化值储存到后端，换下一个角落。
     webcam_checker()
-
     data = []
 
     with mp_face_mesh.FaceMesh(
@@ -77,6 +147,7 @@ def gaze_tracking_initialization(direaction):
 def gaze_tracking_main():
 
     global Focus
+    global Focus_flow
 
     x_edge_left  = (Initialized_direaction[1][0] + Initialized_direaction[3][0])/2
     x_edge_right = (Initialized_direaction[2][0] + Initialized_direaction[4][0])/2
@@ -93,7 +164,6 @@ def gaze_tracking_main():
         return True
 
     webcam_checker()
-
     data = SlidingWindow()
 
     with mp_face_mesh.FaceMesh(
@@ -126,8 +196,8 @@ def gaze_tracking_main():
                     Flag += 1
                 else:
                     Flag -= 1
-                print(One_second_total, One_second_OFS, end='    ')
-                print(data.mean())
+                # print(One_second_total, One_second_OFS, end='    ')
+                # print(data.mean())
                 One_second_total = One_second_OFS = 0
                 start_time = time.time()
 
@@ -137,7 +207,8 @@ def gaze_tracking_main():
                 if Flag < 0:
                     Flag = 0
                     Focus = True
-                print(Flag)
+                Focus_flow.append(Focus)
+                # print(Flag)
                 
             # cv2.imshow('output window', image)
             # if cv2.waitKey(2) & 0xFF == 27:
