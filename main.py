@@ -35,17 +35,9 @@ async def handler(websocket):
                 print(f"Received scroll: {value}")
                 scroll_data.append(value)
             case "focus":
-                if not (is_focus and gt.Focus):
-                    await websocket.send(
-                        json.dumps(
-                            {
-                                "type": "show_notification",
-                                "value": None,
-                            }
-                        )
-                    )
                 await websocket.send(
-                    json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
+                    # json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
+                    json.dumps({"type": "focus", "value": True})
                 )
 
 

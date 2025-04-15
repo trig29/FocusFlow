@@ -4,15 +4,20 @@ console.log("Content script loaded.");
 // let spacePressCount = 0;
 
 // 1. 接收 background.js 的消息
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log(request)
-  if (request.action === "ws_message") {
-    request.value = JSON.parse(request.value)
-    if (request.value.type === "show_notification") {
-      showNotification();
-    }
-  }
-});
+// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+//   console.log(request)
+//   if (request.action === "ws_message") {
+//     request.value = JSON.parse(request.value)
+//     if (request.value.type === "show_notification") {
+//       showNotification();
+//     }
+//   }
+// });
+
+setInterval(
+  () => {
+    chrome.runtime.sendMessage({ action: "focus", value: {} }, res => res.focus_state || showNotification())
+  }, 1000)
 // 2. 监听键盘事件
 // document.addEventListener('keydown', function (event) {
 //   if (event.code === 'Space') {
@@ -35,7 +40,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // 3. 创建并显示弹窗
 function showNotification() {
   // 如果已存在，就不重复插入
-  if (document.getElementById("ff-notification-screen")) return;
+  if (document.querySelector("#ff-notification-screen, #ff-main-screen")) return;
 
   const notification = document.createElement("div");
   notification.className = "ff-notification";
@@ -110,11 +115,11 @@ function showNotification() {
       chatScreen.style.zIndex = "10000";
     }
 
-    notification.remove();
+    notification.style.display = "none"
   });
 
   document.querySelector(".ff-ignore-btn").addEventListener("click", () => {
-    notification.remove();
+    notification.style.display = "none"
   });
 }
 
@@ -131,6 +136,7 @@ function createChatScreen() {
     display: none;
   `;
   chatScreen.innerHTML = `
+    <button class="close-btn" id="ff-close-btn">X</button>
     <div class="focus-state">Focus State: Active</div>
     <div class="chat-history" id="ff-chat-history">
       <!-- Messages appear here -->
@@ -190,6 +196,7 @@ function createChatScreen() {
 
   // 添加聊天功能
   document.getElementById("ff-send-btn").addEventListener("click", sendMessage);
+  document.getElementById("ff-close-btn").addEventListener("click", () => document.getElementById("ff-main-screen").style.display = "none");
   document.getElementById("ff-user-input").addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendMessage();
   });

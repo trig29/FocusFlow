@@ -1,4 +1,5 @@
 let webSocket = null;
+let focus_state = true
 
 class Message {
     constructor(type, value) {
@@ -36,8 +37,10 @@ function connect() {
     };
 
     webSocket.onmessage = (event) => {
-        console.log(`websocket received message: ${event.data}`);
-        chrome.runtime.sendMessage({ action: 'ws_message', value: event.data })
+        let data = JSON.parse(event.data)
+        if (data.type == "focus") {
+            focus_state = data.value
+        }
     };
 
     webSocket.onclose = (event) => {
@@ -72,6 +75,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ wsStatus: true })
 
         }
+    } else if (request.action === "focus") {
+        console.log(focus_state)
+        sendResponse({ focus_state })
     }
 });
 
