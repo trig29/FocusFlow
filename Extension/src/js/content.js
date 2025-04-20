@@ -40,7 +40,6 @@ setInterval(
 // 不专心的弹窗
 function showNotification() {
 
-  // 有了就不要反复弹
   if (document.querySelector("#ff-notification-screen, #ff-main-screen")) return;
 
   // 创建容器
@@ -54,7 +53,6 @@ function showNotification() {
       .then(html => {
         notification.innerHTML = html;
         document.body.appendChild(notification);
-        console.log(html);
         // 事件监听器
         document.querySelector(".ff-help-btn").addEventListener("click", () => {
           let chatScreen = document.getElementById("main-screen") || document.getElementById("ff-main-screen");
@@ -78,102 +76,47 @@ function showNotification() {
 }
 
 
-// 创建聊天框的函数
+// 创建聊天框
 function createChatScreen() {
-  const chatScreen = document.createElement("div");
-  chatScreen.className = "screen main";
-  chatScreen.id = "ff-main-screen";
-  chatScreen.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 10000;
-    display: none;
-  `;
-  chatScreen.innerHTML = `
-    <button class="close-btn" id="ff-close-btn">X</button>
-    <div class="focus-state">Focus State: Active</div>
-    <div class="chat-history" id="ff-chat-history">
-      <!-- Messages appear here -->
-    </div>
-    <div class="input-section">
-      <input type="text" class="input-box" id="ff-user-input" placeholder="Type something...">
-      <button class="send-btn" id="ff-send-btn">Send</button>
-    </div>
-  `;
+  const container = document.createElement("div");
+  const chatUrl = chrome.runtime.getURL("chat.html");
+  fetch(chatUrl)
+      .then(res => res.text())
+      .then(html => {
+        container.innerHTML = html;
+        document.body.appendChild(container);
+        document.getElementById("ff-send-btn").addEventListener("click", sendMessage);
+        document.getElementById("ff-close-btn").addEventListener("click", () => {
+          document.getElementById("ff-main-screen").style.display = "none";
+        });
+        document.getElementById("ff-user-input").addEventListener("keypress", (e) => {
+          if (e.key === "Enter") sendMessage();
+        });
 
-  // 添加聊天框样式
-  const chatStyle = document.createElement("style");
-  chatStyle.textContent = `
-    .screen.main {
-      padding: 20px;
-      border-radius: 20px;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 300px;
-    }
-    .focus-state {
-      text-align: center;
-      margin-bottom: 10px;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .chat-history {
-      height: 200px;
-      background-color: #eee;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      overflow-y: auto;
-    }
-    .input-section {
-      display: flex;
-    }
-    .input-box {
-      flex: 1;
-      padding: 5px;
-      border: 1px solid #aaa;
-      border-radius: 5px;
-    }
-    .send-btn {
-      margin-left: 5px;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #0b01c6;
-      color: white;
-      cursor: pointer;
-    }
-  `;
+        function sendMessage() {
+          const input = document.getElementById("ff-user-input");
+          const message = input.value.trim();
+          if (message) {
+            addMessage("user", message);
+            input.value = "";
+            setTimeout(() => {
+              addMessage("ai", "FocusFlow: I'm here to help you stay focused!");
+            }, 800);
+          }
+        }
 
-  document.head.appendChild(chatStyle);
-  document.body.appendChild(chatScreen);
+        // 添加消息，加整个div
+        function addMessage(sender, content) {
+          const chatHistory = document.getElementById("ff-chat-history");
+          const wrapper = document.createElement("div");
+          wrapper.className = `chat-message ${sender}-message`;
+          const bubble = document.createElement("div");
+          bubble.className = "message-bubble";
+          bubble.textContent = content;
+          wrapper.appendChild(bubble);
+          chatHistory.appendChild(wrapper);
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
 
-  // 添加聊天功能
-  document.getElementById("ff-send-btn").addEventListener("click", sendMessage);
-  document.getElementById("ff-close-btn").addEventListener("click", () => document.getElementById("ff-main-screen").style.display = "none");
-  document.getElementById("ff-user-input").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendMessage();
-  });
-
-  function sendMessage() {
-    const input = document.getElementById("ff-user-input");
-    const message = input.value.trim();
-    if (message) {
-      addMessage("You: " + message);
-      input.value = "";
-      // 模拟回复
-      setTimeout(() => {
-        addMessage("FocusFlow: I'm here to help you stay focused!");
-      }, 1000);
-    }
-  }
-
-  function addMessage(text) {
-    const chatHistory = document.getElementById("ff-chat-history");
-    const messageElement = document.createElement("div");
-    messageElement.textContent = text;
-    chatHistory.appendChild(messageElement);
-    chatHistory.scrollTop = chatHistory.scrollHeight;
-  }
+      });
 }

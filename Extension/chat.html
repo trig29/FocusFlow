@@ -1,0 +1,241 @@
+<!-- chat.html -->
+<!--聊天组件-->
+<div class="screen main" id="ff-main-screen">
+  <link rel="stylesheet" href="src/css/style.css" />
+  <style>
+    .screen.main {
+      width: 400px;
+      height: 600px;
+      padding: 1.5rem;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      font-family: 'Inter', sans-serif;
+    }
+    :root {
+      /*全局颜色配置*/
+      --primary-color: #4f46e5;
+      --secondary-color: #6366f1;
+      --bg-light: rgb(255, 255, 255);
+      --bg-dark: #1f2937;
+      --text-dark: #464646;
+      --text-light: #f3f4f6;
+      --radius: 0.75rem;
+      --transition: 0.3s ease;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #3d4146;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      background: var(--primary-color);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 1.5rem;
+      cursor: pointer;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+
+    button:hover {
+      background: var(--secondary-color);
+    }
+    /*当前focus状态与退出按钮*/
+
+    .focus-state {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--secondary-color);
+      background-color: rgba(99, 102, 241, 0.1);
+      border: 1.5px solid var(--secondary-color);
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .focus-state:hover {
+      background-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .focus-tag-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tag-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .focus-state,
+    .stop-focus-btn {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      border: 1.5px solid;
+      transition: all 0.2s ease;
+    }
+
+    .focus-state {
+      color: var(--secondary-color);
+      border-color: var(--secondary-color);
+      background-color: transparent;
+    }
+
+    .focus-state:hover {
+      background-color: rgba(99, 102, 241, 0.1);
+    }
+
+    .stop-focus-btn {
+      color: #dc2626;
+      border-color: #dc2626;
+      background-color: transparent;
+      cursor: pointer;
+    }
+
+    .stop-focus-btn:hover {
+      background-color: rgba(220, 38, 38, 0.1);
+    }
+
+    /*聊天区域*/
+
+    .chat-message {
+      display: flex;
+      margin: 0.5rem 0;
+    }
+
+    .user-message {
+      justify-content: flex-end;
+    }
+
+    .ai-message {
+      justify-content: flex-start;
+    }
+
+    .message-bubble {
+      max-width: 75%;
+      padding: 0.5rem 1rem;
+      border-radius: 1.2rem;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-message .message-bubble {
+      background-color: var(--secondary-color);
+      color: white;
+      border-bottom-right-radius: 0;
+    }
+
+    .ai-message .message-bubble {
+      background-color: #f3f4f6;
+      color: #111827;
+      border-bottom-left-radius: 0;
+    }
+
+
+    .chat-history {
+      height:440px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+
+    /*聊天输入框*/
+
+    .input-section {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .input-box {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border var(--transition);
+    }
+
+    .input-box:focus {
+      border-color: var(--primary-color);
+    }
+
+    .send-btn {
+      background: var(--primary-color);
+      color: #fff;
+      padding: 0 1rem;
+      border-radius: var(--radius);
+      transition: background var(--transition);
+    }
+
+    .send-btn:hover {
+      background: var(--secondary-color);
+    }
+  </style>
+
+
+  <div class="main-screen" id="main-screen">
+    <div class="focus-tag-wrapper">
+      <h1 style="font-size: 1.5rem">FocusFlow</h1>
+      <div class="tag-area">
+        <div class="focus-state">Active</div>
+        <div class="stop-focus-btn">Exit</div>
+        <div class="stop-focus-btn" id="ff-close-btn">X</div>
+      </div>
+    </div>
+    <div class="chat-history" id="ff-chat-history">
+    <div class="chat-message user-message">
+        <div class="message-bubble">How do I stay focused while studying?</div>
+      </div>
+      <div class="chat-message ai-message">
+        <div class="message-bubble">
+          Here are some tips:<br>
+          • Set a timer (Pomodoro method)<br>
+          • Minimize distractions (silence notifications)<br>
+          • Use a clean workspace<br>
+          • Break big tasks into smaller chunks<br>
+          You got this! 💪
+        </div>
+      </div>
+    </div>
+    <div class="input-section">
+      <input type="text" class="input-box" id="ff-user-input" placeholder="Type something..." />
+      <button class="send-btn" id="ff-send-btn">Send</button>
+    </div>
+  </div>
+</div>

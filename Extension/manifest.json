@@ -22,7 +22,7 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["notification.html"],
+            "resources": ["notification.html", "chat.html"],
             "matches": ["<all_urls>"]
         }
     ],
