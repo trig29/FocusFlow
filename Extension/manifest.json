@@ -20,6 +20,12 @@
         "service_worker": "src/js/background.js",
         "type": "module"
     },
+    "web_accessible_resources": [
+        {
+            "resources": ["notification.html"],
+            "matches": ["<all_urls>"]
+        }
+    ],
     "action": {
         "default_popup": "index.html",
         "default_icon": "static/images/icon.png"
