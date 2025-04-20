@@ -3,6 +3,7 @@ const sequence = document.getElementById('sequence');
 const mainScreen = document.getElementById('main-screen');
 const focusImg = document.getElementById('focus-img');
 const focusText = document.getElementById('focus-text');
+const successText = document.getElementById('success-text');
 
 class Message {
   constructor(type, value) {
@@ -74,7 +75,8 @@ function runCountdown(duration, onTick, onComplete) {
 }
 
 function completeFocusSequence() {
-  focusText.textContent = 'Initiation complete! 🎉';
+  focusText.textContent = '';
+  successText.textContent = 'Initiation complete! 🎉';
   focusImg.style.display = 'none';
   chrome.storage.session.set({ initialized: true })
   setTimeout(() => {
