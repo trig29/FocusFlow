@@ -1,50 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FocusFlow</title>
-  <!-- <style src="src/css/popup.css"></style> -->
-  <link rel="stylesheet" href="src/css/popup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/css/style.css" />
 </head>
-
 <body>
-  <!-- Welcome Screen -->
-  <div class="screen1 welcome-screen1" id="welcome">
-    <div>
-      <h1>FocusFlow</h1>
-      <p>Welcome to FocusFlow!<br>
-        We'll guide you through four focus steps.<br>
-        Please stare at the indicated screen corners.</p>
-      <button class="start-button" id="start">Start!</button>
+
+
+<!--欢迎页面-->
+<div class="screen1 welcome-screen1" id="welcome">
+  <div>
+    <h1>FocusFlow</h1>
+    <p>Welcome to FocusFlow 🎉</p>
+      <p>Just follow the instructions and look at the screen corners.</p>
+    <button class="start-button" id="start">Start</button>
+  </div>
+</div>
+
+<!--引导Focus的四张图-->
+<div class="screen1 black-screen1" id="sequence">
+  <img id="focus-img" class="focus-image" src="" alt="Focus Corner" />
+  <div class="focus-text" id="focus-text">Focusing...</div>
+  <div class="success-text" id="success-text"></div>
+</div>
+
+<!--插件本体的AI助手-->
+<div class="main-screen" id="main-screen">
+  <div class="focus-tag-wrapper">
+    <h1 style="font-size: 1.5rem">FocusFlow</h1>
+    <div class="tag-area">
+    <div class="focus-state">Active</div>
+    <div class="stop-focus-btn">Exit</div>
     </div>
   </div>
-
-  <!-- Focus Sequence Screen -->
-  <div class="screen1 black-screen1" id="sequence">
-    <img id="focus-img" class="focus-image" src="" />
-    <div class="focus-text" id="focus-text">Focusing...</div>
-  </div>
-
-  <!-- Main Screen -->
-  <div class="main-screen" id="main-screen">
-    <div class="focus-state">Focus State: Active</div>
-    <div class="chat-history" id="chat-history">
-      <!-- Chat log here -->
+  <div class="chat-history" id="chat-history">
+    <!-- 示例对话 -->
+    <div class="chat-message user-message">
+      <div class="message-bubble">How do I stay focused while studying?</div>
     </div>
-    <div class="input-section">
-      <input type="text" class="input-box" id="user-input" placeholder="Type something...">
-      <button class="send-btn" id="send-btn">Send</button>
+    <div class="chat-message ai-message">
+      <div class="message-bubble">
+        Here are some tips:<br>
+        • Set a timer (Pomodoro method)<br>
+        • Minimize distractions (silence notifications)<br>
+        • Use a clean workspace<br>
+        • Break big tasks into smaller chunks<br>
+        You got this! 💪
+      </div>
     </div>
   </div>
-
-  <!-- Notification Area -->
-  <div id="notification-screen">
-    FocusFlow: I'm here to help you stay focused!
+  <div class="input-section">
+    <input type="text" class="input-box" id="user-input" placeholder="Type something...">
+    <button class="send-btn" id="send-btn">Send</button>
   </div>
+</div>
 
-  <!-- 脚本引用：确保 script.js 文件和 HTML 在同一目录 -->
-  <script src="src/js/script.js"></script>
+<!--右下角通知-->
+<div id="notification-screen">
+  FocusFlow: I'm here to help you stay focused!
+</div>
+
+
+<script src="src/js/script.js"></script>
 </body>
-
 </html>
