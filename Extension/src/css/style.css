@@ -47,10 +47,11 @@ body {
 }
 
 .screen1, .main-screen {
+    padding: 1.5rem;
     background: #fff;
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
     width: 400px;
-    height: 300px;
+    height: 600px;
     overflow: hidden;
     transition: transform var(--transition);
 }
@@ -117,8 +118,11 @@ button:hover {
     margin-bottom: 1rem;
 }
 
-.main-screen {
-    padding: 1.5rem;
+.success-text {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
 }
 
 /*当前focus状态与退出按钮*/
@@ -223,7 +227,7 @@ button:hover {
 
 
 .chat-history {
-    height:150px;
+    height:440px;
     overflow-y: auto;
     margin-bottom: 1rem;
     border: 1px solid #e5e7eb;
