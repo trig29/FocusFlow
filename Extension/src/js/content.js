@@ -139,7 +139,7 @@ function createChatScreen() {
         chatHistory.appendChild(messageElement);
         chatHistory.scrollTop = chatHistory.scrollHeight;
       }
-    }
+    })
 }
 
 document.addEventListener("scroll", () => {
