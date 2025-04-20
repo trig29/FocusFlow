@@ -109,7 +109,7 @@ function createChatScreen() {
         const input = document.getElementById("ff-user-input");
         const message = input.value.trim();
         if (message) {
-          addMessage("You: " + message);
+          addMessage("user", message);
           input.value = "";
           // 模拟回复
           // setTimeout(() => {
@@ -125,18 +125,22 @@ function createChatScreen() {
               response = data.response
             }).catch(err => console.log(err))
             if (response[time]) {
-              addMessage("FocusFlow: " + response[time])
+              addMessage("ai", response[time])
               break
             }
             await new Promise(resolve => setTimeout(resolve, 200))
           }
         }
       }
-      function addMessage(text) {
+      function addMessage(sender, content) {
         const chatHistory = document.getElementById("ff-chat-history");
-        const messageElement = document.createElement("div");
-        messageElement.textContent = text;
-        chatHistory.appendChild(messageElement);
+        const wrapper = document.createElement("div");
+        wrapper.className = `chat-message ${sender}-message`;
+        const bubble = document.createElement("div");
+        bubble.className = "message-bubble";
+        bubble.textContent = content;
+        wrapper.appendChild(bubble);
+        chatHistory.appendChild(wrapper);
         chatHistory.scrollTop = chatHistory.scrollHeight;
       }
     })
