@@ -92,7 +92,6 @@ document.getElementById('send-btn').addEventListener('click', () => {
 
 window.onload = () => {
   chrome.storage.session.get('initialized', data => {
-    console.log(JSON.stringify(data))
     if (data.initialized) {
       welcome.style.display = 'none';
       sequence.style.display = 'none';

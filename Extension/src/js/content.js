@@ -1,5 +1,17 @@
 console.log("Content script loaded.");
 
+class Message {
+  constructor(type, value) {
+    this.type = type
+    this.value = value
+  }
+
+  encode() {
+    let msg = JSON.stringify(this)
+    return msg
+  }
+}
+
 // 空格键计数器
 // let spacePressCount = 0;
 
@@ -201,19 +213,33 @@ function createChatScreen() {
     if (e.key === "Enter") sendMessage();
   });
 
-  function sendMessage() {
+  async function sendMessage() {
     const input = document.getElementById("ff-user-input");
     const message = input.value.trim();
     if (message) {
       addMessage("You: " + message);
       input.value = "";
       // 模拟回复
-      setTimeout(() => {
-        addMessage("FocusFlow: I'm here to help you stay focused!");
-      }, 1000);
+      // setTimeout(() => {
+      //   addMessage("FocusFlow: I'm here to help you stay focused!");
+      // }, 1000);
+      time = new Date().getTime()
+      await chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("input", { time, message })).encode() })
+      while (true) {
+        console.log("waiting for response")
+        let response
+        chrome.storage.session.get("response").then(data => {
+          if (data["response"] == undefined) return
+          response = data.response
+        }).catch(err => console.log(err))
+        if (response[time]) {
+          addMessage("FocusFlow: " + response[time])
+          break
+        }
+        await new Promise(resolve => setTimeout(resolve, 200))
+      }
     }
   }
-
   function addMessage(text) {
     const chatHistory = document.getElementById("ff-chat-history");
     const messageElement = document.createElement("div");
@@ -222,3 +248,11 @@ function createChatScreen() {
     chatHistory.scrollTop = chatHistory.scrollHeight;
   }
 }
+
+document.addEventListener("scroll", () => {
+  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  let scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+  let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+  let scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
+  chrome.runtime.sendMessage({ action: 'ws_send', value: (new Message("scroll", { "distance": scrollTop.toFixed(2), "percent": scrollPercent.toFixed(2), "time": new Date().getTime() })).encode() });
+})
