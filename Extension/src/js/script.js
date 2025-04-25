@@ -79,7 +79,7 @@ function runCountdown(duration, onTick, onComplete) {
 
 function completeFocusSequence() {
   focusText.textContent = '';
-  successText.textContent = 'Initiation complete! 🎉';
+  successText.textContent = 'Initialization complete! 🎉';
   focusImg.style.display = 'none';
   chrome.storage.session.set({ initialized: true })
   setTimeout(() => {
