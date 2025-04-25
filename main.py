@@ -34,7 +34,8 @@ async def handler(websocket):
                     await asyncio.to_thread(gt.gaze_tracking_main)
                     pass
             case "scroll":
-                print(f"Received scroll: {value}")
+                global previous_scroll, cur_start, maximum_duration
+                # print(f"Received scroll: {value}")
                 if value["time"]-previous_scroll<=200:
                     maximum_duration=max(maximum_duration,value["time"]-cur_start)
                 else:
@@ -42,14 +43,16 @@ async def handler(websocket):
                     start_times.append(cur_start)
                 previous_scroll=value["time"]
             case "focus":
+                # print(f"### {gt.Focus}")
                 await websocket.send(
                     # json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
                     json.dumps({"type": "focus", "value": False})
+                    # json.dumps({"type": "focus", "value": (gt.Focus)})
                 )
             case "input":
                 print(f"Received input: {value}")
                 # TODO: Implement Deepseek API
-                time.sleep(1)
+                await asyncio.sleep(1)
                 await websocket.send(
                     json.dumps(
                         {
@@ -73,9 +76,9 @@ async def data_analysis():
 
 def analyze_mouse(data: deque):
     global is_focus, previous_scroll, maximum_duration
-    maximum_idle_seconds = 600
-    maximum_move_seconds = 10
-    maximum_move_counts = 10
+    maximum_idle_seconds = 60
+    maximum_move_seconds = 15
+    maximum_move_counts = 15
 
     print("----- Analyzing mouse activity -----")
     print(f"Data length: {len(data)}")

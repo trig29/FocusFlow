@@ -30,7 +30,7 @@ def get_deepseek_response(message):
     deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
     siliconflow_api_url = "https://api.siliconflow.cn/v1/chat/completions"
 
-    deepseek_api_key = ""
+    deepseek_api_key = "sk-a32f6a223bc04bac9d458d395ad6d7b0"
     siliconflow_api_key = "" #TODO 运行时记得要填
 
     # 请求头
@@ -83,29 +83,28 @@ def get_deepseek_response(message):
 
 
 # 使用示例
-if __name__ == "__main__":
+def chatbot():
     
     # 从前端接收的消息
     context = ""
-    while True:
-        user_question = input("You: ")
-        with open("1.txt", "r", encoding="utf-8") as file:
-            webpage = file.read()
-        user_message = f"""
-                            This is a conversation with context. Answer the user's question using the webpage content and prior messages.
+    user_question = input("You: ")
+    with open("1.txt", "r", encoding="utf-8") as file:
+        webpage = file.read()
+    user_message = f"""
+                        This is a conversation with context. Answer the user's question using the webpage content and prior messages.
 
-                            Webpage Content:
-                            {webpage}
+                        Webpage Content:
+                        {webpage}
 
-                            Previous Conversation:
-                            {context}
+                        Previous Conversation:
+                        {context}
 
-                            Current User Question:
-                            {user_question}
-                        """
+                        Current User Question:
+                        {user_question}
+                    """
 
-        result = get_deepseek_response(user_message)
-        print("FocusFlow: \n", result)
-        if input("Continue? Y/N: ") == "N":
-            break
-        context += f"user: {user_question};\nFocusflow: {result}\n"
+    result = get_deepseek_response(user_message)
+    # print("FocusFlow: \n", result)
+    # if input("Continue? Y/N: ") == "N":
+    #     break
+    # context += f"user: {user_question};\nFocusflow: {result}\n"

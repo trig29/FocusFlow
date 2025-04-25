@@ -197,7 +197,7 @@ def gaze_tracking_main():
                     Flag += 1
                 else:
                     Flag -= 1
-                # print(One_second_total, One_second_OFS, end='    ')
+                print(One_second_total, One_second_OFS, end='    ')
                 # print(data.mean())
                 One_second_total = One_second_OFS = 0
                 start_time = time.time()
@@ -205,11 +205,12 @@ def gaze_tracking_main():
                 if Flag >= Flag_maxm:  #判定为不专心
                     Flag = Flag_maxm
                     Focus = False
+                else:
+                    Focus = True
                 if Flag < 0:
                     Flag = 0
-                    Focus = True
                 Focus_flow.append(Focus)
-                # print(Flag)
+                print(f"!!! {Flag}, {Focus}")
                 
             # cv2.imshow('output window', image)
             # if cv2.waitKey(2) & 0xFF == 27:
