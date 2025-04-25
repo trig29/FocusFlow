@@ -4,7 +4,9 @@
     "version": "1.0",
     "manifest_version": 3,
     "permissions": [
-        "storage"
+        "storage",
+        "scripting",
+        "activeTab"
     ],
     "content_scripts": [
         {
@@ -22,8 +24,13 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["notification.html", "chat.html"],
-            "matches": ["<all_urls>"]
+            "resources": [
+                "notification.html",
+                "chat.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
         }
     ],
     "action": {

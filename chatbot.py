@@ -1,8 +1,10 @@
 import requests
 import json
 import time
+from api_key import key
 
 context = dict()
+
 
 def get_deepseek_response(message):
     custom_prompt = """
@@ -27,53 +29,53 @@ def get_deepseek_response(message):
                         - 严格控制在400字以内，优先输出高价值信息。
                         - 末尾请输出：学长，请和我一起专注吧！。
                     """
-    
+
     # API端点 - 请根据DeepSeek的实际API文档调整
     deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
     siliconflow_api_url = "https://api.siliconflow.cn/v1/chat/completions"
 
+<<<<<<< HEAD
     deepseek_api_key = "sk-a32f6a223bc04bac9d458d395ad6d7b0"
     siliconflow_api_key = "" #TODO 运行时记得要填
+=======
+    deepseek_api_key = key
+    siliconflow_api_key = ""  # TODO 运行时记得要填
+>>>>>>> daa0efe09c747a0ba7601ac8678feb19704f5781
 
     # 请求头
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {deepseek_api_key}"
+        "Authorization": f"Bearer {deepseek_api_key}",
     }
-    
+
     # 构造请求数据
-    data = {
-        "model": "deepseek-chat",  # 根据实际情况调整模型名称
-        "messages": []
-    }
-    
+    data = {"model": "deepseek-chat", "messages": []}  # 根据实际情况调整模型名称
+
     # custom_prompt = ""
 
     # 添加自定义prompt（系统消息），如果提供的话
     if custom_prompt:
-        data["messages"].append({
-            "role": "system",
-            "content": custom_prompt
-        })
-    
+        data["messages"].append({"role": "system", "content": custom_prompt})
+
     # 添加用户消息
-    data["messages"].append({
-        "role": "user",
-        "content": message
-    })
-    
+    data["messages"].append({"role": "user", "content": message})
+
     try:
         start_time = time.time()
         # 发送POST请求
-        response = requests.post(deepseek_api_url, headers=headers, data=json.dumps(data))
+        response = requests.post(
+            deepseek_api_url, headers=headers, data=json.dumps(data)
+        )
         response.raise_for_status()  # 检查是否有错误响应
-        
+
         # 解析响应
         response_data = response.json()
-        result = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        
+        result = (
+            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        )
+
         return result
-    
+
     except requests.exceptions.RequestException as e:
         print(f"请求API时出错: {e}")
         return f"API请求错误: {str(e)}"
@@ -81,12 +83,12 @@ def get_deepseek_response(message):
         print(f"处理API响应时出错: {e}")
         return f"处理响应时出错: {str(e)}"
     finally:
-        print(f"思考耗时：{int(time.time() - start_time)}s", end = '\n\n')
+        print(f"思考耗时：{int(time.time() - start_time)}s", end="\n\n")
 
 
 # 使用示例
 def chatbot(user_question, webpage, uid):
-    
+
     # 从前端接收的消息
     if not uid in context:
         context[uid] = "New chat"
@@ -98,20 +100,11 @@ def chatbot(user_question, webpage, uid):
     result = get_deepseek_response(user_message)
     if context[uid] == "New chat":
         context[uid] = ""
-    context[uid] += f"User question: ###{user_question}###;\nAI response: ###{result}###;\n"
+    context[
+        uid
+    ] += f"User question: ###{user_question}###;\nAI response: ###{result}###;\n"
     return result
     # print("FocusFlow: \n", result)
     # if input("Continue? Y/N: ") == "N":
     #     break
     # context += f"user: {user_question};\nFocusflow: {result}\n"
-
-
-
-while True:
-    user_question = input("You: ")
-    uid = input("uid: ")
-    webcontent = "No content currently."
-    result = chatbot(user_question, webcontent, uid)
-    print("FocusFlow: \n", result)
-    if input("Continue? Y/N: ") == "N":
-        break
