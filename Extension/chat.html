@@ -1,195 +1,196 @@
 <!-- chat.html -->
 <!--聊天组件-->
 <div class="screen main" id="ff-main-screen">
-  <link rel="stylesheet" href="src/css/style.css" />
   <style>
-    .screen.main {
-      width: 400px;
-      height: 600px;
-      padding: 1.5rem;
-      border-radius: 20px;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 10000;
-      font-family: 'Inter', sans-serif;
-    }
-    :root {
-      --primary-color: #4f46e5;
-      --secondary-color: #6366f1;
-      --bg-light: rgb(255, 255, 255);
-      --bg-dark: #1f2937;
-      --text-dark: #464646;
-      --text-light: #f3f4f6;
-      --radius: 0.75rem;
-      --transition: 0.3s ease;
-    }
+    /*#ff-main-screen {*/
+    #ff-main-screen.screen.main {
+        width: 350px;
+        height: 600px;
+        padding: 1.5rem;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10000;
+        font-family: 'Inter', sans-serif;
+      }
 
-    .title {
-      text-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      letter-spacing: 0.5px;
-      margin-bottom: 1rem;
-    }
+    #ff-main-screen {
+        --primary-color: #4f46e5;
+        --secondary-color: #6366f1;
+        --bg-light: rgb(255, 255, 255);
+        --bg-dark: #1f2937;
+        --text-dark: #464646;
+        --text-light: #f3f4f6;
+        --radius: 0.75rem;
+        --transition: 0.3s ease;
+      }
 
-    .send-btn {
-      background: var(--primary-color);
-      color: #fff;
-      padding: 0 1rem;
-      border-radius: var(--radius);
-      transition: background var(--transition);
-      background: var(--primary-color);
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-    }
+    #ff-main-screen .ff-title {
+        text-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+      }
 
-    .send-btn:hover {
-      background: var(--secondary-color);
-    }
+    #ff-main-screen .ff-send-btn {
+        background: var(--primary-color);
+        color: #fff;
+        padding: 0 1rem;
+        border-radius: var(--radius);
+        transition: background var(--transition);
+        background: var(--primary-color);
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+      }
 
-    .focus-state {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--secondary-color);
-      background-color: rgba(99, 102, 241, 0.1);
-      border: 1.5px solid var(--secondary-color);
-      border-radius: 16px;
-      margin-bottom: 1rem;
-      transition: background-color 0.3s ease;
-    }
+    #ff-main-screen .ff-send-btn:hover {
+        background: var(--secondary-color);
+      }
 
-    .focus-state:hover {
-      background-color: rgba(99, 102, 241, 0.2);
-    }
+    #ff-main-screen .ff-focus-state {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--secondary-color);
+        background-color: rgba(99, 102, 241, 0.1);
+        border: 1.5px solid var(--secondary-color);
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        transition: background-color 0.3s ease;
+      }
 
-    .focus-tag-wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    #ff-main-screen .ff-focus-state:hover {
+        background-color: rgba(99, 102, 241, 0.2);
+      }
 
-    .tag-area {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    #ff-main-screen .focus-tag-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .focus-state,
-    .stop-focus-btn {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      border-radius: 16px;
-      margin-bottom: 1rem;
-      border: 1.5px solid;
-      transition: all 0.2s ease;
-    }
+    #ff-main-screen .tag-area {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
 
-    .focus-state {
-      color: var(--secondary-color);
-      border-color: var(--secondary-color);
-      background-color: transparent;
-    }
+    #ff-main-screen .ff-focus-state,
+    #ff-main-screen .stop-focus-btn {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+        border: 1.5px solid;
+        transition: all 0.2s ease;
+      }
 
-    .focus-state:hover {
-      background-color: rgba(99, 102, 241, 0.1);
-    }
+    #ff-main-screen .ff-focus-state {
+        color: var(--secondary-color);
+        border-color: var(--secondary-color);
+        background-color: transparent;
+      }
 
-    .stop-focus-btn {
-      color: #dc2626;
-      border-color: #dc2626;
-      background-color: transparent;
-      cursor: pointer;
-    }
+    #ff-main-screen .ff-focus-state:hover {
+        background-color: rgba(99, 102, 241, 0.1);
+      }
 
-    .stop-focus-btn:hover {
-      background-color: rgba(220, 38, 38, 0.1);
-    }
+    #ff-main-screen .stop-focus-btn {
+        color: #dc2626;
+        border-color: #dc2626;
+        background-color: transparent;
+        cursor: pointer;
+      }
 
-    /*聊天区域*/
+    #ff-main-screen .stop-focus-btn:hover {
+        background-color: rgba(220, 38, 38, 0.1);
+      }
 
-    .chat-message {
-      display: flex;
-      margin: 0.5rem 0;
-    }
+      /*聊天区域*/
 
-    .user-message {
-      justify-content: flex-end;
-    }
+    #ff-main-screen .chat-message {
+        display: flex;
+        margin: 0.5rem 0;
+      }
 
-    .ai-message {
-      justify-content: flex-start;
-    }
+    #ff-main-screen .user-message {
+        justify-content: flex-end;
+      }
 
-    .message-bubble {
-      white-space: pre-wrap;
-      overflow-wrap: break-word;
-      max-width: 75%;
-      padding: 0.5rem 1rem;
-      border-radius: 1.2rem;
-      font-size: 0.75rem;
-      line-height: 1.4;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    #ff-main-screen .ai-message {
+        justify-content: flex-start;
+      }
 
-    .user-message .message-bubble {
-      background-color: var(--secondary-color);
-      color: white;
-      border-bottom-right-radius: 0;
-    }
+    #ff-main-screen .message-bubble {
+        overflow-wrap: break-word;
+        max-width: 75%;
+        padding: 0.5rem 1rem;
+        border-radius: 1.2rem;
+        font-size: 0.75rem;
+        line-height: 1.4;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-    .ai-message .message-bubble {
-      background-color: #f3f4f6;
-      color: #111827;
-      border-bottom-left-radius: 0;
-    }
+    #ff-main-screen .user-message .message-bubble {
+        background-color: var(--secondary-color);
+        color: white;
+        border-bottom-right-radius: 0;
+      }
+
+    #ff-main-screen .ai-message .message-bubble {
+        background-color: #f3f4f6;
+        color: #111827;
+        border-bottom-left-radius: 0;
+      }
 
 
-    .chat-history {
-      height:440px;
-      overflow-y: auto;
-      margin-bottom: 1rem;
-      border: 1px solid #e5e7eb;
-      border-radius: var(--radius);
-      padding: 1rem;
-    }
+    #ff-main-screen .chat-history {
+        height: 440px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: var(--radius);
+        padding: 1rem;
+      }
 
-    /*聊天输入框*/
+      /*聊天输入框*/
 
-    .input-section {
-      display: flex;
-      gap: 0.5rem;
-    }
+    #ff-main-screen .input-section {
+        display: flex;
+        gap: 0.5rem;
+      }
 
-    .input-box {
-      flex: 1;
-      padding: 0.75rem;
-      border: 1px solid #d1d5db;
-      border-radius: var(--radius);
-      outline: none;
-      transition: border var(--transition);
-    }
+    #ff-main-screen .input-box {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: var(--radius);
+        outline: none;
+        transition: border var(--transition);
+      }
 
-    .input-box:focus {
-      border-color: var(--primary-color);
-    }
+    #ff-main-screen .input-box:focus {
+        border-color: var(--primary-color);
+      }
+    /*}*/
   </style>
 
 
   <div class="main-screen" id="main-screen">
     <div class="focus-tag-wrapper">
-      <h1 class="title" style="font-size: 1.5rem">FocusFlow</h1>
+      <h1 class="ff-title" style="font-size: 1.5rem">FocusFlow</h1>
       <div class="tag-area">
-        <div class="focus-state">Active</div>
+        <div class="ff-focus-state">Active</div>
         <div class="stop-focus-btn">Exit</div>
         <div class="stop-focus-btn" id="ff-close-btn">X</div>
       </div>
@@ -211,7 +212,7 @@
     </div>
     <div class="input-section">
       <label for="ff-user-input"></label><input type="text" class="input-box" id="ff-user-input" placeholder="Type something..." />
-      <button class="send-btn">Send</button>
+      <button class="ff-send-btn" id="ff-send-btn">Send</button>
     </div>
   </div>
 </div>
