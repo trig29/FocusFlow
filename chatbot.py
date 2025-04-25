@@ -31,45 +31,35 @@ def get_deepseek_response(message):
                         - 与用户问题使用的语言保持一致. 优先使用英语.
                     """
 
-    # API端点 - 请根据DeepSeek的实际API文档调整
     deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
     siliconflow_api_url = "https://api.siliconflow.cn/v1/chat/completions"
 
     deepseek_api_key = ""
     siliconflow_api_key = ""  # TODO 运行时记得要填
 
-    # 请求头
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {deepseek_api_key}",
     }
 
     # 构造请求数据
-    data = {"model": "deepseek-chat", "messages": []}  # 根据实际情况调整模型名称
+    data = {"model": "deepseek-chat", "messages": []}
 
-    # custom_prompt = ""
-
-    # 添加自定义prompt（系统消息），如果提供的话
     if custom_prompt:
         data["messages"].append({"role": "system", "content": custom_prompt})
 
-    # 添加用户消息
     data["messages"].append({"role": "user", "content": message})
 
     try:
         start_time = time.time()
-        # 发送POST请求
         response = requests.post(
             deepseek_api_url, headers=headers, data=json.dumps(data)
         )
-        response.raise_for_status()  # 检查是否有错误响应
-
-        # 解析响应
+        response.raise_for_status()
         response_data = response.json()
         result = (
             response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
         )
-
         return result
 
     except requests.exceptions.RequestException as e:
@@ -82,10 +72,8 @@ def get_deepseek_response(message):
         print(f"思考耗时：{int(time.time() - start_time)}s", end="\n\n")
 
 
-# 使用示例
 def chatbot(user_question, webpage, uid):
 
-    # 从前端接收的消息
     if not uid in context:
         context[uid] = "New chat"
     user_message = f"""This is a conversation with context. Answer the user's question using the webpage content and prior messages.
