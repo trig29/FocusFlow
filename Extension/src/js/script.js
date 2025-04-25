@@ -86,12 +86,49 @@ function completeFocusSequence() {
 }
 
 document.querySelector("#start").addEventListener("click", startFocus);
-
 // 点击“Send”按钮弹出通知
-document.getElementById('send-btn').addEventListener('click', () => {
-  document.getElementById('notification-screen').style.display = 'block';
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById("user-input").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
 });
-
+function addMessage(sender, content) {
+  const chatHistory = document.getElementById("chat-history");
+  const wrapper = document.createElement("div");
+  wrapper.className = `chat-message ${sender}-message`;
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+  bubble.textContent = content;
+  wrapper.appendChild(bubble);
+  chatHistory.appendChild(wrapper);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+async function sendMessage() {
+  const input = document.getElementById("user-input");
+  const message = input.value.trim();
+  if (message) {
+    addMessage("user", message);
+    input.value = "";
+    // 模拟回复
+    // setTimeout(() => {
+    //   addMessage("FocusFlow: I'm here to help you stay focused!");
+    // }, 1000);
+    time = new Date().getTime()
+    await chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("input", { time, message })).encode() })
+    while (true) {
+      console.log("waiting for response")
+      let response=[]
+      await chrome.storage.session.get("response").then(data => {
+        if (data["response"] == undefined) return
+        response = data.response
+      }).catch(err => console.log(err))
+      if (response[time]) {
+        addMessage("ai", response[time])
+        break
+      }
+      await new Promise(resolve => setTimeout(resolve, 200))
+    }
+  }
+}
 window.onload = () => {
   chrome.storage.session.get('initialized', data => {
     if (data.initialized) {

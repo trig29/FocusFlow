@@ -76,6 +76,8 @@ function createChatScreen() {
       async function sendMessage() {
         const input = document.getElementById("ff-user-input");
         const message = input.value.trim();
+        const pageId = crypto.randomUUID();
+        const pagecontent = document.body.innerText;
         if (message) {
           addMessage("user", message);
           input.value = "";
@@ -84,7 +86,7 @@ function createChatScreen() {
           //   addMessage("FocusFlow: I'm here to help you stay focused!");
           // }, 1000);
           time = new Date().getTime()
-          await chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("input", { time, message })).encode() })
+          await chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("input", { uid: pageId, webpage:pagecontent, message })).encode() })
           while (true) {
             console.log("waiting for response")
             let response=[]
