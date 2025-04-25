@@ -41,11 +41,28 @@ function connect() {
         if (data.type === "focus") {
             focus_state = data.value
         } else if (data.type === "response") {
-            chrome.storage.session.get("response", storage => {
-                storage[data.value.time] = data.value.message
-                chrome.storage.session.set({ "response": storage })
+            // chrome.storage.session.get("response", storage => {
+            //     storage[data.value.time] = data.value.message
+            //     chrome.storage.session.set({ "response": storage })
 
-            })
+            // })
+            if (data.value.fromPopup) {
+                chrome.runtime.sendMessage({ action: "response", value: data.value.message }, (res) => {
+                    if (res && res.status) {
+                        console.log("response sent to popup")
+                    } else {
+                        console.error("response failed to send to popup")
+                    }
+                })
+            } else {
+                chrome.tabs.sendMessage(data.value.tabId, { action: "response", value: data.value.message }, (res) => {
+                    if (res && res.status) {
+                        console.log("response sent to content script")
+                    } else {
+                        console.error("response failed to send to content script")
+                    }
+                })
+            }
         }
     };
 
@@ -64,11 +81,16 @@ function disconnect() {
 
 connect();
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.action === "ws_send") {
         if (!webSocket || webSocket.readyState !== WebSocket.OPEN) {
             sendResponse({ wsStatus: false })
         } else {
+            request.value = JSON.parse(request.value)
+            if (request.value.type === "input") {
+                request.value.value.tabId = sender.tab ? sender.tab.id : await chrome.tabs.query({ active: true, lastFocusedWindow: true }).then(tabs => tabs[0].id)
+            }
+            request.value = JSON.stringify(request.value)
             console.log("ws_send", request.value)
             webSocket.send(request.value)
             sendResponse({ wsStatus: true })

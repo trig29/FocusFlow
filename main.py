@@ -6,6 +6,8 @@ import time
 from websockets.asyncio.server import serve
 from collections import deque
 import gaze_tracking as gt
+from chatbot import chatbot
+
 
 start_times = deque(maxlen=50)
 previous_scroll = time.time() * 1000
@@ -52,12 +54,18 @@ async def handler(websocket):
             case "input":
                 print(f"Received input: {value}")
                 # TODO: Implement Deepseek API
-                await asyncio.sleep(1)
+                res = await asyncio.to_thread(
+                    chatbot, value["message"], value["webpage"], value["tabId"]
+                )
                 await websocket.send(
                     json.dumps(
                         {
                             "type": "response",
-                            "value": {"time": value["time"], "message": "Test message"},
+                            "value": {
+                                "message": res,
+                                "tabId": value["tabId"],
+                                "fromPopup": value["fromPopup"],
+                            },
                         }
                     )
                 )

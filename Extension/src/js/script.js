@@ -5,6 +5,9 @@ const focusImg = document.getElementById('focus-img');
 const focusText = document.getElementById('focus-text');
 const successText = document.getElementById('success-text');
 
+let thinking = false
+let msgElement = null
+
 class Message {
   constructor(type, value) {
     this.type = type
@@ -103,8 +106,20 @@ function addMessage(sender, content) {
   chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 async function sendMessage() {
+  if (thinking) return
   const input = document.getElementById("user-input");
   const message = input.value.trim();
+  const pagecontent = await chrome.tabs.query({ active: true, lastFocusedWindow: true }).then(tabs => tabs[0].id).then(tabId => {
+    console.log(tabId)
+    return new Promise((resolve) => {
+      chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => {
+          return document.body.innerText
+        }
+      }).then((result) => resolve(result[0].result))
+    })
+  })
   if (message) {
     addMessage("user", message);
     input.value = "";
@@ -112,23 +127,41 @@ async function sendMessage() {
     // setTimeout(() => {
     //   addMessage("FocusFlow: I'm here to help you stay focused!");
     // }, 1000);
-    time = new Date().getTime()
-    await chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("input", { time, message })).encode() })
-    while (true) {
-      console.log("waiting for response")
-      let response=[]
-      await chrome.storage.session.get("response").then(data => {
-        if (data["response"] == undefined) return
-        response = data.response
-      }).catch(err => console.log(err))
-      if (response[time]) {
-        addMessage("ai", response[time])
-        break
-      }
-      await new Promise(resolve => setTimeout(resolve, 200))
-    }
+    msgElement = addMessage("ai", "Thinking...")
+    thinking = true
+    chrome.runtime.sendMessage({
+      action: "ws_send",
+      value: (new Message("input", { webpage: pagecontent, message, fromPopup: true })).encode()
+    })
   }
 }
+
+function addMessage(sender, content) {
+  const chatHistory = document.getElementById("chat-history");
+  const wrapper = document.createElement("div");
+  wrapper.className = `chat-message ${sender}-message`;
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+  bubble.textContent = content;
+  wrapper.appendChild(bubble);
+  chatHistory.appendChild(wrapper);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+  return bubble;
+}
+
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.action === "response") {
+    const response = request.value;
+    if (response) {
+      if (thinking) {
+        msgElement.textContent = response;
+        thinking = false
+      } else {
+        addMessage("ai", response);
+      }
+    }
+  }
+});
 window.onload = () => {
   chrome.storage.session.get('initialized', data => {
     if (data.initialized) {

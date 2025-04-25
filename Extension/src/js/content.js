@@ -92,7 +92,7 @@ function createChatScreen() {
           thinking = true
           chrome.runtime.sendMessage({
             action: "ws_send",
-            value: (new Message("input", { webpage: pagecontent, message })).encode()
+            value: (new Message("input", { webpage: pagecontent, message, fromPopup: false })).encode()
           })
         }
       }
