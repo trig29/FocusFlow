@@ -205,6 +205,7 @@ button:hover {
 }
 
 .message-bubble {
+    overflow-wrap: break-word;
     max-width: 75%;
     padding: 0.5rem 1rem;
     border-radius: 1.2rem;
