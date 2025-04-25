@@ -13,6 +13,7 @@ import os
 Focus = True
 Focus_flow = []
 Initialized_direaction = [None, None, None, None, None]
+Continue_state = True
 
 class SlidingWindow:
     def __init__(self, maxlen=10):
@@ -176,7 +177,7 @@ def gaze_tracking_main():
         One_second_OFS =  0
         Flag = 0
         Flag_maxm = 30
-        while cap.isOpened():
+        while cap.isOpened() and Continue_state:
             success, image = cap.read()
             if not success:
                 print("Ignoring empty camera frame.")
