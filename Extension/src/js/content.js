@@ -12,42 +12,10 @@ class Message {
   }
 }
 
-// 空格键计数器
-// let spacePressCount = 0;
-
-// 1. 接收 background.js 的消息
-// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-//   console.log(request)
-//   if (request.action === "ws_message") {
-//     request.value = JSON.parse(request.value)
-//     if (request.value.type === "show_notification") {
-//       showNotification();
-//     }
-//   }
-// });
-
 setInterval(
   () => {
     chrome.runtime.sendMessage({ action: "focus", value: {} }, res => res.focus_state || showNotification())
   }, 1000)
-// 2. 监听键盘事件
-// document.addEventListener('keydown', function (event) {
-//   if (event.code === 'Space') {
-//     event.preventDefault(); // 防止空格键滚动页面
-//     spacePressCount++;
-
-//     // 如果按了3次空格
-//     if (spacePressCount >= 3) {
-//       showNotification();
-//       spacePressCount = 0; // 重置计数器
-//     }
-
-//     // 1秒后重置计数器（防止慢慢按空格也触发）
-//     setTimeout(() => {
-//       spacePressCount = 0;
-//     }, 1000);
-//   }
-// });
 
 // 不专心的弹窗
 function showNotification() {
@@ -119,8 +87,8 @@ function createChatScreen() {
           await chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("input", { time, message })).encode() })
           while (true) {
             console.log("waiting for response")
-            let response
-            chrome.storage.session.get("response").then(data => {
+            let response=[]
+            await chrome.storage.session.get("response").then(data => {
               if (data["response"] == undefined) return
               response = data.response
             }).catch(err => console.log(err))
