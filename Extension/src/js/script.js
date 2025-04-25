@@ -98,6 +98,45 @@ document.querySelector(".stop-focus-btn").addEventListener("click",event=>{
   chrome.storage.session.set({ initialized: false })
   chrome.storage.session.remove("response")
   chrome.storage.session.remove("initialized")
+  const checkInterval = setInterval(() => {
+    // 尝试从 session 存储获取焦点图片
+    chrome.storage.session.get("focusImage", (data) => {
+      if (data.focusImage) {
+        console.log("Focus image found.");
+        const newTab = window.open();
+        newTab.document.write(`
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Focus Image</title>
+            <style>
+              body { text-align: center; padding: 20px; }
+              img { max-width: 100%; border-radius: 8px; }
+            </style>
+          </head>
+          <body>
+            <h3>Your Focus Visualization</h3>
+            <img src="data:image/png;base64,${data.focusImage}" alt="Focus Result" />
+          </body>
+          </html>
+        `);
+
+        // 找到图片后停止轮询
+        clearInterval(checkInterval);
+      } else {
+        console.log("Focus image not found, retrying...");
+      }
+    });
+  }, 500); // 每500毫秒检查一次
+
+  // 设定一个最大检查次数，避免无限循环（可选）
+  setTimeout(() => {
+    clearInterval(checkInterval);
+    console.log("Stopped checking for focus image after timeout.");
+  }, 30000);
+  
 })
 // 点击“Send”按钮弹出通知
 document.getElementById('send-btn').addEventListener('click', sendMessage);

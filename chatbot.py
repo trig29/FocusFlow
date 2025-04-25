@@ -1,14 +1,13 @@
 import requests
 import json
 import time
-from api_key import key
 
 context = dict()
 
 
 def get_deepseek_response(message):
     custom_prompt = """
-                            你是一个名为FocusFlow的智能学习辅助系统，专门帮助学习者高效理解并掌握知识。你的核心任务是结合用户提供的网页内容和具体问题，通过总结、分析、拓展等方式辅助学习，确保信息准确、易懂且实用。
+                        你是一个名为FocusFlow的智能学习辅助系统，专门帮助学习者高效理解并掌握知识。你的核心任务是结合用户提供的网页内容和具体问题，通过总结、分析、拓展等方式辅助学习，确保信息准确、易懂且实用。
 
                         # 核心功能
                         1. 内容解析与总结
@@ -26,21 +25,18 @@ def get_deepseek_response(message):
                         - 可适当进行拓展，拓展部分不超过总篇幅的30%，避免喧宾夺主。
                         3. 格式与长度：
                         - 分点或分段表述，逻辑层级分明。
-                        - 严格控制在400字以内，优先输出高价值信息。
-                        - 末尾请输出：学长，请和我一起专注吧！。
+                        - 严格控制在300词(英语)/400字(中文)以内，优先输出高价值信息。
+                        - 末尾不要输出多余信息.
+                        4. 语言:
+                        - 与用户问题使用的语言保持一致. 优先使用英语.
                     """
 
     # API端点 - 请根据DeepSeek的实际API文档调整
     deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
     siliconflow_api_url = "https://api.siliconflow.cn/v1/chat/completions"
 
-<<<<<<< HEAD
-    deepseek_api_key = "sk-a32f6a223bc04bac9d458d395ad6d7b0"
-    siliconflow_api_key = "" #TODO 运行时记得要填
-=======
-    deepseek_api_key = key
+    deepseek_api_key = ""
     siliconflow_api_key = ""  # TODO 运行时记得要填
->>>>>>> daa0efe09c747a0ba7601ac8678feb19704f5781
 
     # 请求头
     headers = {

@@ -63,7 +63,12 @@ function connect() {
                     }
                 })
             }
+        } else if (data.type === "image") {
+            chrome.storage.session.set({ focusImage: data.value }, () => {
+                console.log("Focus image saved to session storage.");
+            });
         }
+        
     };
 
     webSocket.onclose = (event) => {

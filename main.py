@@ -34,7 +34,8 @@ async def handler(websocket):
                 global sum
                 sum += 1
                 if sum == 4:
-                    asyncio.to_thread(gt.gaze_tracking_main)
+                    gt.Continue_state = True
+                    asyncio.create_task(asyncio.to_thread(gt.gaze_tracking_main))
             case "scroll":
                 global previous_scroll, cur_start, maximum_duration
                 # print(f"Received scroll: {value}")
@@ -47,12 +48,12 @@ async def handler(websocket):
             case "focus":
                 # print(f"### {gt.Focus}")
                 await websocket.send(
-                    # json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
-                    json.dumps({"type": "focus", "value": False})
+                    json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
+                    # json.dumps({"type": "focus", "value": False})
                     # json.dumps({"type": "focus", "value": (gt.Focus)})
                 )
             case "input":
-                print(f"Received input: {value}")
+                # print(f"Received input: {value}")
                 # TODO: Implement Deepseek API
                 res = await asyncio.to_thread(
                     chatbot, value["message"], value["webpage"], value["tabId"]
@@ -72,6 +73,12 @@ async def handler(websocket):
             case "stop":
                 gt.Continue_state = False
                 print("Received exit. Closing backend.")
+                image_base64 = gt.graph_generate()
+
+                await websocket.send(json.dumps({
+                    "type": "image",
+                    "value": image_base64
+                }))
                 return
 
 

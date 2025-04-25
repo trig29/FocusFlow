@@ -112,6 +112,7 @@ def graph_generate():
     fig.savefig(buffer, format='png')
     buffer.seek(0)
     image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    print("111")
     return image_base64
 
 def gaze_tracking_initialization(direaction):
