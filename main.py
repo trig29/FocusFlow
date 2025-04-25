@@ -74,21 +74,33 @@ async def data_analysis():
 def analyze_mouse(data: deque):
     global is_focus, previous_scroll, maximum_duration
     maximum_idle_seconds = 600
-    maximum_move_seconds=10
+    maximum_move_seconds = 10
     maximum_move_counts = 10
+
+    print("----- Analyzing mouse activity -----")
+    print(f"Data length: {len(data)}")
+    print(f"Max scroll duration: {maximum_duration}")
+    print(f"Time since last scroll (ms): {time.time()*1000 - previous_scroll}")
+
     if len(data) > 0:
-        print(f"Data: {data[0]}")
-    while len(data)>0 and time.time() * 1000 - data[0] > 60000:
+        print(f"Oldest scroll: {data[0]}")
+    while len(data) > 0 and time.time() * 1000 - data[0] > 60000:
         data.popleft()
+
     if len(data) >= maximum_move_counts:
         is_focus = False
-    elif maximum_duration>maximum_move_seconds*1000:
-        is_focus=False
-    elif time.time()*1000-previous_scroll>=maximum_idle_seconds*1000:
-        is_focus=False
+    elif maximum_duration > maximum_move_seconds * 1000:
+        is_focus = False
+    elif time.time() * 1000 - previous_scroll >= maximum_idle_seconds * 1000:
+        is_focus = False
     else:
         is_focus = True
-    print(is_focus)
+
+    print(f"is_focus: {is_focus}")
+    print("------------------------------------")
+
+    # Reset scroll duration for next window
+    maximum_duration = 0
 
 
 async def main():
