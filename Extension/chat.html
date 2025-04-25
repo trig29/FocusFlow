@@ -17,7 +17,6 @@
       font-family: 'Inter', sans-serif;
     }
     :root {
-      /*全局颜色配置*/
       --primary-color: #4f46e5;
       --secondary-color: #6366f1;
       --bg-light: rgb(255, 255, 255);
@@ -28,13 +27,7 @@
       --transition: 0.3s ease;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    h1 {
+    .title {
       text-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
       font-size: 2.5rem;
       font-weight: 700;
@@ -43,29 +36,22 @@
       margin-bottom: 1rem;
     }
 
-    p {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: #3d4146;
-      margin-bottom: 2rem;
-    }
-
-    button {
+    .send-btn {
       background: var(--primary-color);
       color: #fff;
+      padding: 0 1rem;
+      border-radius: var(--radius);
+      transition: background var(--transition);
+      background: var(--primary-color);
       font-size: 1rem;
       font-weight: 600;
-      padding: 0.8rem 2rem;
       border: none;
-      border-radius: 1.5rem;
       cursor: pointer;
-      transition: background var(--transition), box-shadow var(--transition);
     }
 
-    button:hover {
+    .send-btn:hover {
       background: var(--secondary-color);
     }
-    /*当前focus状态与退出按钮*/
 
     .focus-state {
       display: inline-block;
@@ -145,6 +131,8 @@
     }
 
     .message-bubble {
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
       max-width: 75%;
       padding: 0.5rem 1rem;
       border-radius: 1.2rem;
@@ -194,24 +182,12 @@
     .input-box:focus {
       border-color: var(--primary-color);
     }
-
-    .send-btn {
-      background: var(--primary-color);
-      color: #fff;
-      padding: 0 1rem;
-      border-radius: var(--radius);
-      transition: background var(--transition);
-    }
-
-    .send-btn:hover {
-      background: var(--secondary-color);
-    }
   </style>
 
 
   <div class="main-screen" id="main-screen">
     <div class="focus-tag-wrapper">
-      <h1 style="font-size: 1.5rem">FocusFlow</h1>
+      <h1 class="title" style="font-size: 1.5rem">FocusFlow</h1>
       <div class="tag-area">
         <div class="focus-state">Active</div>
         <div class="stop-focus-btn">Exit</div>
@@ -234,8 +210,8 @@
       </div>
     </div>
     <div class="input-section">
-      <input type="text" class="input-box" id="ff-user-input" placeholder="Type something..." />
-      <button class="send-btn" id="ff-send-btn">Send</button>
+      <label for="ff-user-input"></label><input type="text" class="input-box" id="ff-user-input" placeholder="Type something..." />
+      <button class="send-btn">Send</button>
     </div>
   </div>
 </div>
