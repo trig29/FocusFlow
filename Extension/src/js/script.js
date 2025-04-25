@@ -86,6 +86,16 @@ function completeFocusSequence() {
 }
 
 document.querySelector("#start").addEventListener("click", startFocus);
+document.querySelector(".stop-focus-btn").addEventListener("click",event=>{
+  event.preventDefault()
+  chrome.runtime.sendMessage({ action: "ws_send", value: (new Message("stop", {})).encode() })
+  mainScreen.style.display = 'none';
+  welcome.style.display = 'flex';
+  sequence.style.display = 'none';
+  chrome.storage.session.set({ initialized: false })
+  chrome.storage.session.remove("response")
+  chrome.storage.session.remove("initialized")
+})
 // 点击“Send”按钮弹出通知
 document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById("user-input").addEventListener("keypress", (e) => {

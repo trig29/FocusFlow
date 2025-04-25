@@ -32,7 +32,7 @@ def get_deepseek_response(message):
     deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
     siliconflow_api_url = "https://api.siliconflow.cn/v1/chat/completions"
 
-    deepseek_api_key = ""
+    deepseek_api_key = "sk-a32f6a223bc04bac9d458d395ad6d7b0"
     siliconflow_api_key = "" #TODO 运行时记得要填
 
     # 请求头

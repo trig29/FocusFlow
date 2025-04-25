@@ -61,10 +61,9 @@ async def handler(websocket):
                         }
                     )
                 )
-            case "exit":
+            case "stop":
                 gt.Continue_state = False
                 print("Received exit. Closing backend.")
-                await websocket.close()
                 return
 
 
