@@ -37,7 +37,19 @@ async def handler(websocket):
             case "focus":
                 await websocket.send(
                     # json.dumps({"type": "focus", "value": (is_focus and gt.Focus)})
-                    json.dumps({"type": "focus", "value": True})
+                    json.dumps({"type": "focus", "value": False})
+                )
+            case "input":
+                print(f"Received input: {value}")
+                # TODO: Implement Deepseek API
+                time.sleep(1)
+                await websocket.send(
+                    json.dumps(
+                        {
+                            "type": "response",
+                            "value": {"time": value["time"], "message": "Test message"},
+                        }
+                    )
                 )
 
 

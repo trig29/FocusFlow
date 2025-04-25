@@ -38,8 +38,14 @@ function connect() {
 
     webSocket.onmessage = (event) => {
         let data = JSON.parse(event.data)
-        if (data.type == "focus") {
+        if (data.type === "focus") {
             focus_state = data.value
+        } else if (data.type === "response") {
+            chrome.storage.session.get("response", storage => {
+                storage[data.value.time] = data.value.message
+                chrome.storage.session.set({ "response": storage })
+
+            })
         }
     };
 
