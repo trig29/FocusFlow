@@ -8,11 +8,12 @@ from collections import deque
 import gaze_tracking as gt
 
 start_times = deque(maxlen=50)
-previous_scroll=time.time()*1000
-cur_start=time.time()*1000
-maximum_duration=0
+previous_scroll = time.time() * 1000
+cur_start = time.time() * 1000
+maximum_duration = 0
 is_focus = True
 sum = 0
+
 
 async def handler(websocket):
     async for message in websocket:
@@ -31,17 +32,16 @@ async def handler(websocket):
                 global sum
                 sum += 1
                 if sum == 4:
-                    await asyncio.to_thread(gt.gaze_tracking_main)
-                    pass
+                    asyncio.to_thread(gt.gaze_tracking_main)
             case "scroll":
                 global previous_scroll, cur_start, maximum_duration
                 # print(f"Received scroll: {value}")
-                if value["time"]-previous_scroll<=200:
-                    maximum_duration=max(maximum_duration,value["time"]-cur_start)
+                if value["time"] - previous_scroll <= 200:
+                    maximum_duration = max(maximum_duration, value["time"] - cur_start)
                 else:
-                    cur_start=value["time"]
+                    cur_start = value["time"]
                     start_times.append(cur_start)
-                previous_scroll=value["time"]
+                previous_scroll = value["time"]
             case "focus":
                 # print(f"### {gt.Focus}")
                 await websocket.send(
