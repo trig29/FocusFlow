@@ -2,6 +2,8 @@ import requests
 import json
 import time
 
+context = dict()
+
 def get_deepseek_response(message):
     custom_prompt = """
                             你是一个名为FocusFlow的智能学习辅助系统，专门帮助学习者高效理解并掌握知识。你的核心任务是结合用户提供的网页内容和具体问题，通过总结、分析、拓展等方式辅助学习，确保信息准确、易懂且实用。
@@ -23,14 +25,14 @@ def get_deepseek_response(message):
                         3. 格式与长度：
                         - 分点或分段表述，逻辑层级分明。
                         - 严格控制在400字以内，优先输出高价值信息。
-                        - 末尾不要输出多余内容。
+                        - 末尾请输出：学长，请和我一起专注吧！。
                     """
     
     # API端点 - 请根据DeepSeek的实际API文档调整
     deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
     siliconflow_api_url = "https://api.siliconflow.cn/v1/chat/completions"
 
-    deepseek_api_key = "sk-a32f6a223bc04bac9d458d395ad6d7b0"
+    deepseek_api_key = ""
     siliconflow_api_key = "" #TODO 运行时记得要填
 
     # 请求头
@@ -83,28 +85,33 @@ def get_deepseek_response(message):
 
 
 # 使用示例
-def chatbot():
+def chatbot(user_question, webpage, uid):
     
     # 从前端接收的消息
-    context = ""
-    user_question = input("You: ")
-    with open("1.txt", "r", encoding="utf-8") as file:
-        webpage = file.read()
-    user_message = f"""
-                        This is a conversation with context. Answer the user's question using the webpage content and prior messages.
-
-                        Webpage Content:
-                        {webpage}
-
-                        Previous Conversation:
-                        {context}
-
-                        Current User Question:
-                        {user_question}
+    if not uid in context:
+        context[uid] = "New chat"
+    user_message = f"""This is a conversation with context. Answer the user's question using the webpage content and prior messages.
+                        Webpage Content: ###{webpage}###
+                        Previous Conversation:###{context[uid]}###
+                        Current User Question:{user_question}
                     """
-
     result = get_deepseek_response(user_message)
+    if context[uid] == "New chat":
+        context[uid] = ""
+    context[uid] += f"User question: ###{user_question}###;\nAI response: ###{result}###;\n"
+    return result
     # print("FocusFlow: \n", result)
     # if input("Continue? Y/N: ") == "N":
     #     break
     # context += f"user: {user_question};\nFocusflow: {result}\n"
+
+
+
+while True:
+    user_question = input("You: ")
+    uid = input("uid: ")
+    webcontent = "No content currently."
+    result = chatbot(user_question, webcontent, uid)
+    print("FocusFlow: \n", result)
+    if input("Continue? Y/N: ") == "N":
+        break
