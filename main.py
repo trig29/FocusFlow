@@ -112,7 +112,8 @@ def analyze_mouse(data: deque):
         is_focus = False
     else:
         is_focus = True
-
+    for _ in range(60):
+        gt.Focus_flow.append(is_focus)
     print(f"is_focus: {is_focus}")
     print("------------------------------------")
 
